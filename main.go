@@ -17,7 +17,9 @@ func main() {
 	engine := routes.InitRoutes()
 	// 启用协程
 	go func() {
-		engine.Run(viper.GetString("HttpPort"))
+		if err := engine.Run(viper.GetString("HttpPort")); err != nil {
+			return
+		}
 	}()
 
 	// 管道监听到协程退出，则运行结束

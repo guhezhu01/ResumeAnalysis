@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// InitConfig 配置文件初始化
 func InitConfig() {
 	workDir, _ := os.Getwd()                 //工作目录的路径
 	viper.SetConfigName("config")            // 配置文件的文件名

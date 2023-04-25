@@ -1,16 +1,20 @@
 package routes
 
 import (
+	"ResumeAnalysis/handler"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
+// InitRoutes 路由接口
 func InitRoutes() *gin.Engine {
 	engine := gin.Default()
-	engine.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"msg": "ok",
-		})
-	})
+	routes := engine.Group("/api/v1")
+
+	{
+		routes.GET("/get/all", handler.GetAllPersonInf)
+		routes.DELETE("/delete/:id", handler.DeletePersonInf)
+
+	}
+
 	return engine
 }
