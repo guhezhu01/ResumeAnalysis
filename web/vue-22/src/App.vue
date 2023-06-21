@@ -1,16 +1,16 @@
 <template>
-  <div id="app">
+  <!-- <div id="app"> -->
     <router-view /> <!-- 使用 <router-view> 标签来渲染路由组件 -->
-  </div>
+  <!-- </div> -->
 </template>
 
-<script>
+<!-- <script>
 export default {
   name: 'App'
 }
-</script>
+</script> -->
 
-<style>
+<!-- <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -19,4 +19,4 @@ export default {
   color: #2c3e50;
   margin-top: 0px;
 }
-</style>
+</style> -->
