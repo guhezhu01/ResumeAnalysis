@@ -2,6 +2,7 @@ package dao
 
 import (
 	"ResumeAnalysis/utils/errMsg"
+	"errors"
 	"gorm.io/gorm"
 	"log"
 )
@@ -17,7 +18,7 @@ type PersonInformation struct {
 }
 
 // GetAllPersonInf 从mysql获取所有简历信息
-func (personInformation *PersonInformation) GetAllPersonInf() ([]PersonInformation, int64, uint32) {
+func GetAllPersonInf() ([]PersonInformation, int64, uint32) {
 	var data []PersonInformation
 	var total int64
 	err := db.Model(&data).Find(&data).Count(&total).Error
@@ -29,8 +30,7 @@ func (personInformation *PersonInformation) GetAllPersonInf() ([]PersonInformati
 }
 
 // DeletePersonInf 从mysql删除简历
-func (personInformation *PersonInformation) DeletePersonInf(id uint64) uint32 {
-
+func DeletePersonInf(id uint64) uint32 {
 	err := db.Where("id =?", id).Delete(PersonInformation{}).Error
 	if err != nil {
 		log.Fatalln("简历删除失败！,", err)
