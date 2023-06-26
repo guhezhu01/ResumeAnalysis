@@ -40,10 +40,4 @@ func DeletePersonInf(id uint64) uint32 {
 	return errMsg.SUCCESS
 }
 
-func (personInformation *PersonInformation) BeforeDelete(tx *gorm.DB) (err error) {
-	db.Model(personInformation).Where("id=?", personInformation.Id)
-	if personInformation.Name == "管理员" {
-		return errors.New("管理员账户不能删除")
-	}
-	return
-}
+
