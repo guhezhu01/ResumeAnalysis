@@ -1,12 +1,19 @@
 from ecloud import CMSSEcloudOcrClient
 import json
+from docx import Document
+from common.utils import *
 import base64
+
 
 
 accesskey = '2456ff44b570493dacf18b8f0082b2ea'
 secretkey = 'a23d404e53c04929825d4e86e4c179cd'
 url = 'https://api-wuxi-1.cmecloud.cn:8443'
-imagePath = '../dataset_CV/base64/15_01.png'
+
+id = 1
+resume_image_path = f'../../dataset_CV/base64/images/{id}_01.png'
+
+
 def request_smartstructure_file(image_path):
     print("请求智能结构化接口")
     requesturl = '/api/ocr/v1/smartstructure'
@@ -41,16 +48,18 @@ def request_webimage_file(image_path):
         print(e)
     return response_dict
 
-def request_webimage_base64():
-    print("请求Base64参数")
-    imagepath = r'../dataset_CV/base64/1_00.JPG'
+def request_webimage_base64(resume_base):
+    # imagepath = 'D:\\JG-CMSS\\PaaS_MrZ\\智库2023\\SDK\\PythonSDK\\Python_SDK\\test_code\\sfz.jpg'
+    # requesturl = '/api/ocr/v1/webimage'
+    # with open(imagepath, 'rb') as f:
+    #     img = f.read()
     requesturl = '/api/ocr/v1/webimage'
-    with open(imagepath, 'rb') as f:
-        img = f.read()
-        image_base64 = base64.b64encode(img).decode('utf-8')
+    try:
         ocr_client = CMSSEcloudOcrClient(accesskey, secretkey, url)
-        response = ocr_client.request_ocr_service_base64(requestpath=requesturl,base64=image_base64)
+        response = ocr_client.request_ocr_service_base64(requestpath=requesturl, base64=resume_base)
         print(response.text)
+    except ValueError as e:
+        print(e)
 
 
 def request_webimage_url():
@@ -63,8 +72,6 @@ def request_webimage_url():
         print(response.text)
     except ValueError as e:
         print(e)
-
-
 
 def request_handwriting():
     requesturl = '/api/ocr/v1/handwriting'
@@ -89,9 +96,9 @@ def request_customverify():
         print(e)
 
 if __name__ == "__main__":
-    request_smartstructure_file(imagePath)
-    # request_webimage_file(imagePath)
-    # request_webimage_base64()
+    request_smartstructure_file(resume_image_path)
+    request_webimage_file(resume_image_path)
+    # request_webimage_base64(resume_base)
     # request_webimage_url()
     #request_handwriting()
     #request_customverify()
