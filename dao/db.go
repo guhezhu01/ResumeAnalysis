@@ -48,5 +48,4 @@ func InitDb() {
 	// SetConnMaxLifetime 设置连接的最大可复用时间。
 	sqlDb.SetConnMaxLifetime(10 * time.Second)
 	log.Println("mysql连接成功")
-	GetAllPersonInf()
 }
