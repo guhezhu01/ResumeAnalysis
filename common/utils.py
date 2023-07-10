@@ -45,6 +45,7 @@ def get_school_name(resume_text):
     # print(dict)
     return count
 
+
 # 计算工作年限
 # def calculate_work_years(resume_text):
 #     # 正则表达式匹配日期和时间
@@ -124,37 +125,88 @@ def calculate_education_diff(work_years, education):
         return None
 
 
+def preProcess(pattern):
+    dist = [len(pattern) + 1] * 128
+    for i in range(len(pattern)):
+        dist[ord(pattern[i])] = len(pattern) - i
+    return dist
+
+
 def zhusunday(T, P, pos):
-    Tindex = pos + len(P) - 1  # Tindex是在 中搜索的当前位置 ，采用从右向左探索
+    # T是长文本串，P是要匹配的短字符串，pos是T中下标开始的位置
+    Tindex = pos + len(P) - 1  # Tindex是在T中搜索的当前位置，采用从右向左探索
     pindex = len(P) - 1
     pipeipos = 0
+    pipeicishu = 0
+    dist = preProcess(T)
+    print(dist)
 
     while Tindex < len(T):  # 遍历源串T
-        pipeicishu += 1  # 2种情况 1和2
-        if T[Tindex] != P[pindex]:  # 不匹配模式串P最后一个字符 ，有 2种情况 ，分别是 1和 2
-            if dist[T[Tindex]] == len(P):  # 1A：目标字符不在模式串中，是坏字符,dist是模式串预处理数组 ，对 0—127的ASCII字符能使模式窗口向右移动距离进行了预先统计。
+        pipeicishu += 1
+        # 2种情况: 1和2
+        if T[Tindex] != P[pindex]:  # 1：不匹配模式串P最后一个字符
+            # 有2种情况 ，分别是1A和1B
+            if dist[T[Tindex]] == len(P):  # A：目标字符不在模式串中，是坏字符,dist是模式串预处理数组，对0—127的ASCII字符能使模式窗口向右移动距离进行了预先统计。
                 if T[Tindex + 1] != P[0]:  # 多验证坏字符左侧的一个字符
                     Tindex += len(P) + 1  # 跳跃模式串长度个字符探索，验证成功比坏字符多跳一个
                 else:
                     Tindex += len(P)  # 验证不成功，跳跃模式串长度个字符
-            else:  # 1B：改进处:目标字符在模式串中，但不是模式串最后一个字符
+            else:  # B：改进处:目标字符在模式串中，但不是模式串最后一个字符
                 x = len(P) - 2 - dist[T[Tindex]]  # x是由右向左第一次不匹配时字符的下标 ，因为没有全匹配，其值不能小于0
                 if P[x] != T[Tindex - 1] and x >= 0:
                     Tindex += dist[T[Tindex]] + 1
                 else:  # 这种情况多数不成立
                     Tindex += dist[T[Tindex]]
-        else:  # 2：匹配模式串的最后一个字符，回溯追查，对应 2种情况 ，分别是 C和D
+        else:  # 2：匹配模式串的最后一个字符，回溯追查，对应 2种情况 ，分别是 2C和2D
             pipeipos = quanpipei(T, P, Tindex, len(P) - 1)  # 从最后一个字符向前进行匹配
-            if pipeipos != 0:  # C：由后向前部分字符匹配，没有全匹配，这里也对 Sunday进行了改进
+            if pipeipos != 0:  # 2C：由后向前部分字符匹配，没有全匹配，这里也对 Sunday进行了改进
                 x = len(P) - 2 - dist[T[Tindex]]  # x是由右向左最后一次匹配的字符左侧的字符的下标，因为没有全匹配，其值不能小于0
                 if P[x] != T[Tindex - 1] and x >= 0:
                     Tindex += dist[T[Tindex]] + 1  # 多移动
                 else:
                     Tindex += dist[T[Tindex]]
-            else:  # D：所有字符全匹配
+            else:  # 2D：所有字符全匹配
                 return Tindex - len(P) + 1  # 返回匹配的起始下标
 
     if Tindex >= len(T):  # 匹配结束，依然没有返回，表示未匹配成功
         return -1
 
 
+T = "abcoefcacdxdbcd"
+P = "dbcd"
+pos = 0
+
+
+# print(zhusunday(T,P,pos))
+
+
+# sunday 算法，T 为文本串，p 为模式串
+def sunday(T: str, p: str) -> int:
+    n, m = len(T), len(p)
+
+    bc_table = generateBadCharTable(p)  # 生成后移位数表
+
+    i = 0
+    while i <= n - m:
+        j = 0
+        if T[i: i + m] == p:
+            return i  # 匹配完成，返回模式串 p 在文本串 T 的位置
+        if i + m >= n:
+            return -1
+        i += bc_table.get(T[i + m], m + 1)  # 通过后移位数表，向右进行进行快速移动
+    return -1  # 匹配失败
+
+
+# 生成后移位数表
+# bc_table[bad_char] 表示遇到坏字符可以向右移动的距离
+def generateBadCharTable(p: str):
+    m = len(p)
+    bc_table = dict()
+
+    for i in range(m):  # 迭代到最后一个位置 m - 1
+        bc_table[p[i]] = m - i  # 更新遇到坏字符可向右移动的距离
+    return bc_table
+
+
+print(sunday("abbcfdddbddcaddebc", "aaaaa"))
+print(sunday("abbcfdddbddcaddebc", "bcf"))

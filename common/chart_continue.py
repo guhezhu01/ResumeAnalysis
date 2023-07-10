@@ -4,7 +4,7 @@ import pyperclip
 import pandas as pd
 import time
 
-openai.api_key = "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"
+openai.api_key = "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"
 # os.environ['NO_PROXY']='api.openai.com'
 
 # chatGPT3.5支持连续对话

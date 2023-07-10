@@ -1,6 +1,4 @@
-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
-
-test测试 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
+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
 
 加入你是一名hr，需要分析简历中的有用信息，现在我将一份简历中的所有文字全部发给你，请你提取出hr所需要的关键信息，并给出求职建议；
 
